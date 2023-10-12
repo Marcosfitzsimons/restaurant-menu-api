@@ -65,7 +65,7 @@ export const login = async (req, res, next) => {
     user.refreshToken = refreshToken;
     await user.save();
 
-    res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'Lax', maxAge: 20 * 24 * 60 * 60 * 1000 }); // secure: true, sameSite: 'None'
+    res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 20 * 24 * 60 * 60 * 1000 }); // secure: true, sameSite: 'None'
 
     const { _id, isAdmin } = user._doc;
 
@@ -87,7 +87,7 @@ export const logout = async (req, res, next) => {
 
     let user = await User.findOne({ refreshToken: refreshTokenValue });
     if (!user) {
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'Lax' }); // Add secure: true
+        res.clearCookie('jwt', { httpOnly: true, secure: true, sameSite: 'None' }); // Add secure: true
         return res.status(StatusCodes.NO_CONTENT).send();
     }
 
@@ -95,7 +95,7 @@ export const logout = async (req, res, next) => {
     user.refreshToken = ""; // Clear the refreshToken field
     await user.save();
 
-    res.clearCookie('jwt', { httpOnly: true, sameSite: 'Lax' }); // Add secure: true
+    res.clearCookie('jwt', { httpOnly: true, secure: true, sameSite: 'None' }); // Add secure: true
     return res.status(StatusCodes.NO_CONTENT).send();
 }
 
